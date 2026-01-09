@@ -14,8 +14,8 @@ from pyrogram import enums
 
 from TEAMZYRO import ZYRO as app
 
-OWNER_ID = [7638720582]
-EVAL = [7638720582]
+OWNER_ID = [7651303468]
+EVAL = [7651303468]
 
 async def aexec(code, client, message):
     exec(
