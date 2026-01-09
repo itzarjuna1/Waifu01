@@ -2,7 +2,7 @@ import asyncio
 import random
 from pyrogram import filters
 from TEAMZYRO import app, OWNER_ID, SUDO, db
-from TEAMZZYRO.__init__ import CHARA_CHANNEL_ID
+from TEAMZYRO.__init__ import CHARA_CHANNEL_ID
 
 print("🔥 gupload module loaded")
 
