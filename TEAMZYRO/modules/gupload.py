@@ -2,12 +2,10 @@ import asyncio
 from pyrogram import filters
 from pyrogram.errors import FloodWait, ChatAdminRequired
 
-from TEAMZYRO import app, OWNER_ID, SUDO
-from TEAMZYRO.modules.upload import get_random_waifu
-from TEAMZYRO.modules.joinlog import get_all_groups  # adjust if needed
+from TEAMZYRO import app, OWNER_ID, SUDO, collection
 
 # ===============================
-# PERMISSION CHECK
+# AUTH CHECK
 # ===============================
 
 def is_authorized(user_id: int) -> bool:
@@ -15,8 +13,13 @@ def is_authorized(user_id: int) -> bool:
 
 
 # ===============================
-# WAIFU SENDER
+# RANDOM WAIFU FROM DB
 # ===============================
+
+def get_random_waifu():
+    waifu = list(collection.aggregate([{"$sample": {"size": 1}}]))
+    return waifu[0] if waifu else None
+
 
 async def send_waifu(chat_id: int):
     waifu = get_random_waifu()
@@ -25,11 +28,11 @@ async def send_waifu(chat_id: int):
 
     await app.send_photo(
         chat_id,
-        photo=waifu["image"],
+        photo=waifu["file_id"],
         caption=(
             f"💖 **A Wild Waifu Appeared!**\n\n"
-            f"👤 **{waifu['name']}**\n"
-            f"🎌 {waifu['anime']}\n"
+            f"👤 **{waifu['character']}**\n"
+            f"🎌 {waifu['anime']} \n"
             f"⭐ **Rarity:** {waifu['rarity']}\n\n"
             f"⚔️ Use /claim to claim!"
         )
@@ -60,6 +63,8 @@ auto_upload_task = None
 
 
 async def auto_upload_loop(interval: int):
+    from TEAMZYRO.modules.joinlog import get_all_groups
+
     while True:
         for chat_id in get_all_groups():
             try:
@@ -81,11 +86,8 @@ async def auto_upload_loop(interval: int):
 async def start_auto_upload(_, message):
     global auto_upload_task
 
-    # 🔥 THIS WAS MISSING
     if not message.from_user:
-        return await message.reply_text(
-            "❌ Disable anonymous admin mode."
-        )
+        return await message.reply_text("❌ Disable anonymous admin mode.")
 
     if not is_authorized(message.from_user.id):
         return await message.reply_text("❌ Only owner / sudo can use this.")
@@ -124,9 +126,7 @@ async def stop_auto_upload(_, message):
     global auto_upload_task
 
     if not message.from_user:
-        return await message.reply_text(
-            "❌ Disable anonymous admin mode."
-        )
+        return await message.reply_text("❌ Disable anonymous admin mode.")
 
     if not is_authorized(message.from_user.id):
         return await message.reply_text("❌ Only owner / sudo can use this.")
