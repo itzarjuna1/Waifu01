@@ -3,9 +3,19 @@ from pyrogram import filters
 from pyrogram.errors import FloodWait, ChatAdminRequired
 
 from TEAMZYRO import app
-from TEAMZYRO import OWNER_ID, SUDO
-from TEAMZYRO.database.waifu import get_random_waifu
-from TEAMZYRO.database.groups import get_all_groups
+from TEAMZYRO import (
+    application,
+    CHARA_CHANNEL_ID,
+    SUPPORT_CHAT,
+    OWNER_ID,
+    collection,
+    user_collection,
+    db,
+    SUDO,
+    rarity_map,
+    ZYRO,
+    require_power
+)
 
 # ===============================
 # Helpers
