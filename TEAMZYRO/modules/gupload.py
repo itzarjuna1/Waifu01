@@ -1,45 +1,50 @@
 import asyncio
 import random
 from pyrogram import filters
-from TEAMZYRO import app, OWNER_ID, SUDO, collection
+from TEAMZYRO import app, OWNER_ID, SUDO, db, CHARA_CHANNEL_ID
 
 print("🔥 gupload module loaded")
 
 AUTO_TASK = None
 
-
-def is_admin(user_id: int):
-    return user_id == OWNER_ID or user_id in SUDO
+waifu_logs = db.waifu_logs   # collection name
 
 
-def get_random_waifu():
-    waifus = list(collection.find())
-    if not waifus:
+def is_admin(uid: int):
+    return uid == OWNER_ID or uid in SUDO
+
+
+def get_random_waifu_msg():
+    data = list(waifu_logs.find())
+    if not data:
         return None
-    return random.choice(waifus)
+    return random.choice(data)
 
 
+# 🔹 MANUAL DROP
 @app.on_message(filters.command("drop") & filters.group)
 async def manual_drop(_, message):
     if not is_admin(message.from_user.id):
-        return await message.reply_text("❌ Only owner / sudo can drop waifus")
+        return
 
-    waifu = get_random_waifu()
+    waifu = get_random_waifu_msg()
     if not waifu:
-        return await message.reply_text("❌ No waifus found in database")
+        return await message.reply_text("❌ No waifus stored")
 
-    await message.reply_photo(
-        waifu["photo"],
-        caption=f"💖 **{waifu['name']}**\n🎬 {waifu['anime']}\n⭐ Rarity: {waifu['rarity']}"
+    await app.copy_message(
+        chat_id=message.chat.id,
+        from_chat_id=CHARA_CHANNEL_ID,
+        message_id=waifu["msg_id"]
     )
 
 
+# 🔹 AUTO UPLOAD
 @app.on_message(filters.command("autoupload") & filters.group)
 async def start_autoupload(_, message):
     global AUTO_TASK
 
     if not is_admin(message.from_user.id):
-        return await message.reply_text("❌ Only owner / sudo can use this")
+        return
 
     if len(message.command) < 2:
         return await message.reply_text("Usage: `/autoupload <seconds>`")
@@ -56,12 +61,12 @@ async def start_autoupload(_, message):
 
     async def uploader():
         while True:
-            waifu = get_random_waifu()
+            waifu = get_random_waifu_msg()
             if waifu:
-                await app.send_photo(
-                    message.chat.id,
-                    waifu["photo"],
-                    caption=f"💖 **{waifu['name']}**\n🎬 {waifu['anime']}\n⭐ Rarity: {waifu['rarity']}"
+                await app.copy_message(
+                    chat_id=message.chat.id,
+                    from_chat_id=CHARA_CHANNEL_ID,
+                    message_id=waifu["msg_id"]
                 )
             await asyncio.sleep(interval)
 
@@ -69,16 +74,17 @@ async def start_autoupload(_, message):
     await message.reply_text(f"✅ Auto upload started every `{interval}` seconds")
 
 
+# 🔹 STOP AUTO UPLOAD
 @app.on_message(filters.command("stopupload") & filters.group)
 async def stop_autoupload(_, message):
     global AUTO_TASK
 
     if not is_admin(message.from_user.id):
-        return await message.reply_text("❌ Only owner / sudo can stop this")
+        return
 
     if AUTO_TASK:
         AUTO_TASK.cancel()
         AUTO_TASK = None
         await message.reply_text("🛑 Auto upload stopped")
     else:
-        await message.reply_text("⚠ No active auto upload running")
+        await message.reply_text("⚠ No auto upload running")
