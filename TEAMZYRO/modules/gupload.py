@@ -2,28 +2,21 @@ import asyncio
 from pyrogram import filters
 from pyrogram.errors import FloodWait, ChatAdminRequired
 
-from TEAMZYRO import app
-from TEAMZYRO import (
-    application,
-    CHARA_CHANNEL_ID,
-    SUPPORT_CHAT,
-    OWNER_ID,
-    collection,
-    user_collection,
-    db,
-    SUDO,
-    rarity_map,
-    ZYRO,
-    require_power
-)
+from TEAMZYRO import app, OWNER_ID, SUDO
+from TEAMZYRO.modules.upload import get_random_waifu
+from TEAMZYRO.modules.joinlog import get_all_groups  # adjust if needed
 
 # ===============================
-# Helpers
+# PERMISSION CHECK
 # ===============================
 
-def is_sudo(user_id: int) -> bool:
-    return user_id in SUDO_USERS or user_id == OWNER_ID
+def is_authorized(user_id: int) -> bool:
+    return user_id == OWNER_ID or user_id in SUDO
 
+
+# ===============================
+# WAIFU SENDER
+# ===============================
 
 async def send_waifu(chat_id: int):
     waifu = get_random_waifu()
@@ -31,24 +24,24 @@ async def send_waifu(chat_id: int):
         return
 
     await app.send_photo(
-        chat_id=chat_id,
+        chat_id,
         photo=waifu["image"],
         caption=(
             f"💖 **A Wild Waifu Appeared!**\n\n"
             f"👤 **{waifu['name']}**\n"
             f"🎌 {waifu['anime']}\n"
             f"⭐ **Rarity:** {waifu['rarity']}\n\n"
-            f"⚔️ Use /claim to claim her!"
+            f"⚔️ Use /claim to claim!"
         )
     )
 
 
 # ===============================
-# MANUAL DROP COMMAND
+# MANUAL DROP
 # ===============================
 
 @app.on_message(filters.command(["drop", "waifu"]) & filters.group)
-async def manual_waifu_drop(client, message):
+async def manual_drop(client, message):
     try:
         me = await client.get_chat_member(message.chat.id, "me")
         if not me.privileges or not me.privileges.can_send_messages:
@@ -60,7 +53,7 @@ async def manual_waifu_drop(client, message):
 
 
 # ===============================
-# AUTO UPLOAD LOGIC
+# AUTO UPLOAD LOOP
 # ===============================
 
 auto_upload_task = None
@@ -68,16 +61,12 @@ auto_upload_task = None
 
 async def auto_upload_loop(interval: int):
     while True:
-        groups = get_all_groups()
-
-        for chat_id in groups:
+        for chat_id in get_all_groups():
             try:
                 await send_waifu(chat_id)
-                await asyncio.sleep(2)  # flood safety
-
+                await asyncio.sleep(2)
             except FloodWait as e:
                 await asyncio.sleep(e.value)
-
             except Exception:
                 continue
 
@@ -92,25 +81,31 @@ async def auto_upload_loop(interval: int):
 async def start_auto_upload(_, message):
     global auto_upload_task
 
-    if not is_sudo(message.from_user.id):
-        return await message.reply_text("❌ Only **sudo / owner** can use this.")
+    # 🔥 THIS WAS MISSING
+    if not message.from_user:
+        return await message.reply_text(
+            "❌ Disable anonymous admin mode."
+        )
+
+    if not is_authorized(message.from_user.id):
+        return await message.reply_text("❌ Only owner / sudo can use this.")
 
     if len(message.command) != 2:
         return await message.reply_text(
-            "❌ Usage:\n`/autoupload <time_in_seconds>`"
+            "❌ Usage:\n`/autoupload <seconds>`"
         )
 
     try:
         interval = int(message.command[1])
         if interval < 60:
             return await message.reply_text(
-                "⚠️ Interval must be **at least 60 seconds**."
+                "⚠️ Interval must be at least 60 seconds."
             )
     except ValueError:
-        return await message.reply_text("❌ Time must be a number.")
+        return await message.reply_text("❌ Invalid number.")
 
     if auto_upload_task and not auto_upload_task.done():
-        return await message.reply_text("⚠️ Auto upload is already running.")
+        return await message.reply_text("⚠️ Auto upload already running.")
 
     auto_upload_task = app.loop.create_task(auto_upload_loop(interval))
 
@@ -128,8 +123,13 @@ async def start_auto_upload(_, message):
 async def stop_auto_upload(_, message):
     global auto_upload_task
 
-    if not is_sudo(message.from_user.id):
-        return await message.reply_text("❌ Only **sudo / owner** can use this.")
+    if not message.from_user:
+        return await message.reply_text(
+            "❌ Disable anonymous admin mode."
+        )
+
+    if not is_authorized(message.from_user.id):
+        return await message.reply_text("❌ Only owner / sudo can use this.")
 
     if not auto_upload_task:
         return await message.reply_text("⚠️ Auto upload is not running.")
