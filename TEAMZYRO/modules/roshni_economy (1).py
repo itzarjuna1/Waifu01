@@ -5,8 +5,8 @@ from typing import Dict, Tuple
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 
-from Oneforall import app
-from Oneforall.mongo import db
+from TEAMZYRO import app
+from TEAMZYRO.mongo import db
 
 # ────────────────────────────
 # Collections
