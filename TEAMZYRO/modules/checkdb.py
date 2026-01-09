@@ -3,7 +3,7 @@ from TEAMZYRO import app
 from pymongo import MongoClient
 from pyrogram.types import Message
 
-MONGO_URL = "mongodb+srv://Gojowaifu:waifu123@gojowaifu.royysxq.mongodb.net/?retryWrites=true&w=majority&appName=Gojowaifu"
+MONGO_URL = "mongodb+srv://knight4563:knight4563@cluster0.a5br0se.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 mongo = MongoClient(MONGO_URL)
 db = mongo["waifu_bot"]
 users = db["users"]
