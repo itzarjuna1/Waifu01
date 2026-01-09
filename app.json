@@ -1,72 +1,72 @@
 {
-  "name": "MrZyroWaifu",
+  "name": "yazukiwaifu",
   "description": "A Telegram bot built with python-telegram-bot and pyrogram, using MongoDB for data storage.",
   "repository": "https://github.com/yourusername/your-repo-name",
   "keywords": ["python", "telegram-bot", "pyrogram", "mongodb"],
   "env": {
     "API_ID": {
       "description": "Telegram API ID for the bot",
-      "value": "24965086",
+      "value": "37467897",
       "required": true
     },
     "API_HASH": {
       "description": "Telegram API Hash for the bot",
-      "value": "b9c764ce47c010e1a887f19fea54f648",
+      "value": "b1c9ba3d6180a099e35d6498d8434bf0",
       "required": true
     },
     "TOKEN": {
       "description": "Telegram Bot Token",
-      "value": "7687059872:AAF9eK6Xc-UgiGPvui9i9XXA1YHrSxdhlI0",
+      "value": "",
       "required": true
     },
     "GLOG": {
       "description": "Username or ID of the log channel",
-      "value": "Zlog12",
+      "value": "departed_fr",
       "required": true
     },
     "CHARA_CHANNEL_ID": {
       "description": "Username or ID of the character channel",
-      "value": "Zlog12",
+      "value": "departed_fr",
       "required": true
     },
     "SUPPORT_CHAT_ID": {
       "description": "ID of the support chat",
-      "value": "-1002309742084",
+      "value": "-1003633844538",
       "required": true
     },
     "MONGO_URL": {
       "description": "MongoDB connection URL",
-      "value": "mongodb+srv://Alisha:Alisha123@cluster0.yqcpftw.mongodb.net/?retryWrites=true&w=majority",
+      "value": "mongodb+srv://knight4563:knight4563@cluster0.a5br0se.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       "required": true
     },
     "PHOTO_URL_1": {
       "description": "First photo URL for the bot",
-      "value": "https://files.catbox.moe/7ccoub.jpg",
+      "value": "https://files.catbox.moe/hk7hk4.png",
       "required": false
     },
     "PHOTO_URL_2": {
       "description": "Second photo URL for the bot",
-      "value": "https://files.catbox.moe/7ccoub.jpg",
+      "value": "https://files.catbox.moe/hk7hk4.png",
       "required": false
     },
     "SUPPORT_CHAT": {
       "description": "Support chat URL",
-      "value": "https://t.me/Zyroupdates",
+      "value": "https://t.me/dark_musicsupport",
       "required": true
     },
     "UPDATE_CHAT": {
       "description": "Update chat URL",
-      "value": "https://t.me/ZyroBotCodes",
+      "value": "https://t.me/dark_musictm",
       "required": true
     },
     "SUDO": {
       "description": "Comma-separated list of sudo user IDs",
-      "value": "7577185215,5749187175",
+      "value": "8295183620,8409591285",
       "required": true
     },
     "OWNER_ID": {
       "description": "Owner's Telegram user ID",
-      "value": "7073835511",
+      "value": "7651303468",
       "required": true
     }
   },
