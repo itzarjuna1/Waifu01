@@ -3,8 +3,7 @@ from pyrogram import filters
 from pyrogram.errors import FloodWait, ChatAdminRequired
 
 from TEAMZYRO import app
-from TEAMZYRO import OWNER_ID
-from TEAMZYRO.modules.sudo import SUDO_USERS
+from TEAMZYRO import OWNER_ID, SUDO
 from TEAMZYRO.database.waifu import get_random_waifu
 from TEAMZYRO.database.groups import get_all_groups
 
