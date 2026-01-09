@@ -4,7 +4,11 @@ import os
 from telegram.ext import Application
 from motor.motor_asyncio import AsyncIOMotorClient
 from pyrogram import Client, filters as f
-from pyrogram.types import x
+
+from dotenv import load_dotenv
+
+# --------------------------- LOAD .ENV ---------------------------------
+load_dotenv()  # Load all variables from .env
 
 # --------------------------- LOGGING SETUP ------------------------------
 logging.basicConfig(
@@ -25,30 +29,39 @@ def LOGGER(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 # ---------------------------- CONSTANTS ---------------------------------
-api_id = os.getenv("API_ID", "23343216")
-api_hash = os.getenv("API_HASH", "1d66f21cd828dc22b80e3750719bd94a")
-TOKEN = os.getenv("TOKEN", "")
-GLOG = os.getenv("GLOG", "gojo_waifu")
-CHARA_CHANNEL_ID = os.getenv("CHARA_CHANNEL_ID", "gojo_waifu")
-SUPPORT_CHAT_ID = os.getenv("SUPPORT_CHAT_ID", "-1002792716047")
-mongo_url = os.getenv("MONGO_URL", "mongodb+srv://Gojowaifu:waifu123@gojowaifu.royysxq.mongodb.net/?retryWrites=true&w=majority&appName=Gojowaifu")
+api_id = int(os.getenv("API_ID", "37467897"))
+api_hash = os.getenv("API_HASH", "b1c9ba3d6180a099e35d6498d8434bf0")
+TOKEN = os.getenv("TOKEN", "123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ")  # <-- Replace with real BotFather token
 
-MUSJ_JOIN = os.getenv("MUSJ_JOIN", "https://t.me/+8KU5ZDxvZyw0N2U1")
+if not TOKEN:
+    raise ValueError("TOKEN is not set! Add your BotFather token in .env")
 
-# Modified to support both image and video URLs
-START_MEDIA = os.getenv("START_MEDIA", "https://files.catbox.moe/3kd6oq.jpg,https://files.catbox.moe/nkg2ly.jpg,https://files.catbox.moe/0zvwpt.jpg,https://files.catbox.moe/z7d8i6.jpg").split(',')
+GLOG = os.getenv("GLOG", "departed_fr")
+CHARA_CHANNEL_ID = os.getenv("CHARA_CHANNEL_ID", "departed_fr")
+SUPPORT_CHAT_ID = os.getenv("SUPPORT_CHAT_ID", "-1003633844538")
+mongo_url = os.getenv(
+    "MONGO_URL",
+    "mongodb+srv://knight4563:knight4563@cluster0.a5br0se.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+)
+
+MUSJ_JOIN = os.getenv("MUSJ_JOIN", "https://t.me/snowy_hometown")
+
+START_MEDIA = os.getenv(
+    "START_MEDIA",
+    "https://files.catbox.moe/hk7hk4.png,https://files.catbox.moe/hk7hk4.png"
+).split(',')
 
 PHOTO_URL = [
-    os.getenv("PHOTO_URL_1", "https://files.catbox.moe/f5njbm.jpg"),
-    os.getenv("PHOTO_URL_2", "https://files.catbox.moe/3saw6n.jpg")
+    os.getenv("PHOTO_URL_1", "https://files.catbox.moe/hk7hk4.png"),
+    os.getenv("PHOTO_URL_2", "https://files.catbox.moe/hk7hk4.png")
 ]
 
 STATS_IMG = ["https://files.catbox.moe/0zvwpt.jpg"]
 
-SUPPORT_CHAT = os.getenv("SUPPORT_CHAT", "https://t.me/GOJO_NOBITA_II")
-UPDATE_CHAT = os.getenv("UPDATE_CHAT", "https://t.me/GOJO_SUPPORT_GROUP_II")
-SUDO = list(map(int, os.getenv("SUDO", "7553434931").split(',')))
-OWNER_ID = int(os.getenv("OWNER_ID", "7553434931"))
+SUPPORT_CHAT = os.getenv("SUPPORT_CHAT", "https://t.me/dark_musicsupport")
+UPDATE_CHAT = os.getenv("UPDATE_CHAT", "https://t.me/dark_musictm")
+SUDO = list(map(int, os.getenv("SUDO", "8295183620,8409591285").split(',')))
+OWNER_ID = int(os.getenv("OWNER_ID", "7651303468"))
 
 # --------------------- TELEGRAM BOT CONFIGURATION -----------------------
 command_filter = f.create(lambda _, __, message: message.text and message.text.startswith("/"))
@@ -72,8 +85,6 @@ waifu_collection = db["waifus"]
 mines_collection = db["mines_games"]
 multi_collection = db["multi_mines"]
 txn_collection = db["transactions"]
-
-
 
 # -------------------------- GLOBAL VARIABLES ----------------------------
 app = ZYRO
@@ -103,8 +114,8 @@ from TEAMZYRO.unit.zyro_react import *
 from TEAMZYRO.unit.zyro_log import *
 from TEAMZYRO.unit.zyro_send_img import *
 from TEAMZYRO.unit.zyro_rarity import *
-# ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
 async def PLOG(text: str):
     await app.send_message(
        chat_id=GLOG,
